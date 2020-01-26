@@ -1,0 +1,87 @@
+TEST BOARD
+board := [][]int{
+  {1,1,1,1,1,1,1,1,1},
+  {2,2,2,2,2,2,2,2,2},
+  {3,3,3,3,3,3,3,3,3},
+  {4,4,4,4,4,4,4,4,4},
+  {5,5,5,5,5,5,5,5,5},
+  {6,6,6,6,6,6,6,6,6},
+  {7,7,7,7,7,7,7,7,7},
+  {8,8,8,8,8,8,8,8,8},
+  {9,9,9,9,9,9,9,9,9}}
+
+NYT BOARD
+board := [][]int{
+  {0,3,6,0,0,0,1,9,7},
+  {1,8,4,0,6,0,3,0,0},
+  {0,0,0,5,1,3,0,8,0},
+  {4,2,0,6,3,0,9,0,0},
+  {3,9,1,0,8,0,2,4,0},
+  {8,0,0,0,2,9,0,1,0},
+  {0,0,3,8,0,6,0,0,0},
+  {7,4,0,0,0,0,0,0,1},
+  {0,0,2,0,0,4,0,0,9}}
+
+  func solve(bo [][]int) bool{
+    row,col := findEmpty(bo)
+
+    /* If the board is already solved, i.e. there are no
+    more empty spaces to be found, return the board as is */
+    if row==-1 {
+      fmt.Println("puzzle solved")
+      return true
+    }
+    for i := 1; i < 10; i++ {
+      fmt.Println("\n\n\n\n %d \n\n\n\n", i)
+      if valid(bo, row, col, i) {
+        fmt.Println("we got in the valid statement")
+        bo[row][col] = i
+        printBoard(bo)
+
+        if solve(bo) {
+          return true
+        }
+
+        bo[row][col] = 0
+        fmt.Println("reset")
+        printBoard(bo)
+      }
+    }
+
+    return false
+  }
+
+  func valid(bo [][]int, row int, col int, num int) bool{
+    // Check row
+    fmt.Printf("checking row for square %d, %d with number %d\n", row, col, num)
+    for i := 0; i < len(bo); i++ {
+      if bo[row][i] == num && col != i{
+        return false
+      }
+    }
+
+    // Check column
+    fmt.Printf("checking col for square %d, %d with number %d\n", row, col, num)
+    for i := 0; i < len(bo); i++ {
+      if bo[i][col] == num && col != i{
+        return false
+      }
+    }
+
+    // Check box
+    box_x := col/3
+    box_y := row/3
+
+    fmt.Printf("checking box for square %d, %d with number %d\n", row, col, num)
+    fmt.Printf("box_x is %d and box_y is %d\n", box_x, box_y)
+    for i := box_x*3; i< box_x*3 + 3; i++ {
+      for j := box_y*3; j< box_y*3 + 3; j++ {
+        fmt.Println(i,j)
+        if bo[i][j] == num && i != col && j != row{
+          fmt.Println("we are about to return false in the box check")
+          return false
+        }
+      }
+    }
+    return true
+  }
